@@ -1,10 +1,13 @@
 import json
+import time
 from pathlib import Path
 
 import click
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as ec
+from selenium.webdriver.support.wait import WebDriverWait
 
 REPO_DIR_PATH = Path(__file__).parents[2].resolve()
 
@@ -21,7 +24,7 @@ def main(gui) -> None:
         options.add_argument("--headless=new")
 
     browser = Chrome(options)
-    browser.implicitly_wait(2.0)
+    wait = WebDriverWait(browser, 10)
 
     # Load credentials
     json_path = REPO_DIR_PATH / "configs" / "credentials" / "raindrop_io.json"
@@ -30,8 +33,21 @@ def main(gui) -> None:
 
     # Login to Raindrop.io
     browser.get("https://app.raindrop.io")
-    browser.find_element("name", "email").send_keys(account_dict["email"])
+    wait.until(ec.presence_of_element_located(("name", "email"))).send_keys(
+        account_dict["email"]
+    )
     browser.find_element("name", "password").send_keys(account_dict["password"])
     browser.find_element(By.XPATH, "//input[@class='button-dQdc ']").click()
+
+    # Download a CSV file
+    wait.until(ec.visibility_of_element_located((By.LINK_TEXT, "All"))).click()
+    wait.until(
+        ec.visibility_of_element_located(
+            (By.XPATH, "//div[@class='header-Tqac header-BQ_V']/div[6]")
+        )
+    ).click()
+    browser.find_element(By.LINK_TEXT, "CSV").click()
+
+    time.sleep(2)
 
     browser.close()
