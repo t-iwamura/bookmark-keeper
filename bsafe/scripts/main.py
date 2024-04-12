@@ -27,6 +27,28 @@ def main(gui) -> None:
     wait = WebDriverWait(browser, 10)
 
     # Load credentials
+    json_path = REPO_DIR_PATH / "configs" / "credentials" / "pocket.json"
+    with json_path.open("r") as f:
+        account_dict = json.load(f)
+
+    # Login to Pocket
+    browser.get("https://getpocket.com/export")
+    wait.until(ec.presence_of_element_located(("id", "field-1"))).send_keys(
+        account_dict["email"]
+    )
+    wait.until(
+        ec.element_to_be_clickable(("id", "onetrust-reject-all-handler"))
+    ).click()
+    time.sleep(2)
+    browser.find_element(By.CLASS_NAME, "loginform-submit").click()
+    wait.until(ec.presence_of_element_located(("id", "field-2"))).send_keys(
+        account_dict["password"]
+    )
+    browser.find_element(By.CLASS_NAME, "loginform-submit").click()
+
+    time.sleep(2)
+
+    # Load credentials
     json_path = REPO_DIR_PATH / "configs" / "credentials" / "raindrop_io.json"
     with json_path.open("r") as f:
         account_dict = json.load(f)
