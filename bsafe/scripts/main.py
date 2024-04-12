@@ -48,6 +48,14 @@ def main(gui) -> None:
 
     time.sleep(2)
 
+    # Download a HTML file
+    wait.until(ec.visibility_of_element_located((By.LINK_TEXT, "Log In"))).click()
+    wait.until(
+        ec.visibility_of_element_located((By.LINK_TEXT, "Export HTML file"))
+    ).click()
+
+    time.sleep(2)
+
     # Load credentials
     json_path = REPO_DIR_PATH / "configs" / "credentials" / "raindrop_io.json"
     with json_path.open("r") as f:
