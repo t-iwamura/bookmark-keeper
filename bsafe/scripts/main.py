@@ -1,4 +1,5 @@
 import json
+import logging.config
 import time
 from pathlib import Path
 
@@ -10,6 +11,50 @@ from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
 REPO_DIR_PATH = Path(__file__).parents[2].resolve()
+ERROR_LOG_FILENAME = ".bsafe-errors.log"
+LOGGING_CONFIG = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "default": {
+            "format": "%(asctime)s:%(name)s:%(process)d:%(lineno)d "
+            "%(levelname)s %(message)s",
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        "simple": {
+            "format": "%(message)s",
+        },
+    },
+    "handlers": {
+        "logfile": {
+            "formatter": "default",
+            "level": "ERROR",
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": ERROR_LOG_FILENAME,
+            "backupCount": 2,
+        },
+        "verbose_output": {
+            "formatter": "simple",
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",
+        },
+    },
+    "loggers": {
+        "bsafe": {
+            "level": "INFO",
+            "handlers": [
+                "verbose_output",
+            ],
+        },
+    },
+    "root": {
+        "level": "INFO",
+        "handlers": [
+            "logfile",
+        ],
+    },
+}
 
 
 @click.command()
@@ -18,6 +63,9 @@ REPO_DIR_PATH = Path(__file__).parents[2].resolve()
 )
 def main(gui) -> None:
     """CLI app to automatically backup Pocket items and Raindrop.io items"""
+    logging.config.dictConfig(LOGGING_CONFIG)
+    logger = logging.getLogger("bsafe")
+
     # Configure browser
     options = Options()
     if not gui:
@@ -30,6 +78,8 @@ def main(gui) -> None:
     json_path = REPO_DIR_PATH / "configs" / "credentials" / "pocket.json"
     with json_path.open("r") as f:
         account_dict = json.load(f)
+
+    logger.info("Trying login to Pocket")
 
     # Login to Pocket
     browser.get("https://getpocket.com/export")
@@ -46,6 +96,7 @@ def main(gui) -> None:
     )
     browser.find_element(By.CLASS_NAME, "loginform-submit").click()
 
+    logger.info("Login to Pocket has been successful")
     time.sleep(2)
 
     # Download a HTML file
@@ -61,6 +112,8 @@ def main(gui) -> None:
     with json_path.open("r") as f:
         account_dict = json.load(f)
 
+    logger.info("Trying login to Raindrop.io")
+
     # Login to Raindrop.io
     browser.get("https://app.raindrop.io")
     wait.until(ec.presence_of_element_located(("name", "email"))).send_keys(
@@ -68,6 +121,8 @@ def main(gui) -> None:
     )
     browser.find_element("name", "password").send_keys(account_dict["password"])
     browser.find_element(By.XPATH, "//input[@class='button-dQdc ']").click()
+
+    logger.info("Login to Raindrop.io has been successful")
 
     # Download a CSV file
     wait.until(ec.visibility_of_element_located((By.LINK_TEXT, "All"))).click()
