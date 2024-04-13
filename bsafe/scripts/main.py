@@ -74,11 +74,14 @@ def main(gui) -> None:
     browser = Chrome(options)
     wait = WebDriverWait(browser, 10)
 
+    logger.info("Loading credentials for Pocket")
+
     # Load credentials
     json_path = REPO_DIR_PATH / "configs" / "credentials" / "pocket.json"
     with json_path.open("r") as f:
         account_dict = json.load(f)
 
+    logger.info("Loading of credentials for Pocket has been successful")
     logger.info("Trying login to Pocket")
 
     # Login to Pocket
@@ -98,6 +101,7 @@ def main(gui) -> None:
 
     logger.info("Login to Pocket has been successful")
     time.sleep(2)
+    logger.info("Start a download of a HTML file storing Pocket items")
 
     # Download a HTML file
     wait.until(ec.visibility_of_element_located((By.LINK_TEXT, "Log In"))).click()
@@ -105,13 +109,16 @@ def main(gui) -> None:
         ec.visibility_of_element_located((By.LINK_TEXT, "Export HTML file"))
     ).click()
 
+    logger.info("Download of Pocket items has been successful")
     time.sleep(2)
+    logger.info("Loading credentials for Raindrop.io")
 
     # Load credentials
     json_path = REPO_DIR_PATH / "configs" / "credentials" / "raindrop_io.json"
     with json_path.open("r") as f:
         account_dict = json.load(f)
 
+    logger.info("Loading of credentials for Raindrop.io has been successful")
     logger.info("Trying login to Raindrop.io")
 
     # Login to Raindrop.io
@@ -123,6 +130,7 @@ def main(gui) -> None:
     browser.find_element(By.XPATH, "//input[@class='button-dQdc ']").click()
 
     logger.info("Login to Raindrop.io has been successful")
+    logger.info("Start a download of a CSV file storing Raindrop.io items")
 
     # Download a CSV file
     wait.until(ec.visibility_of_element_located((By.LINK_TEXT, "All"))).click()
@@ -134,5 +142,6 @@ def main(gui) -> None:
     browser.find_element(By.LINK_TEXT, "CSV").click()
 
     time.sleep(2)
+    logger.info("Download of Raindrop.io items has been successful")
 
     browser.close()
