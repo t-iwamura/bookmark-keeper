@@ -10,7 +10,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
-REPO_DIR_PATH = Path(__file__).parents[2].resolve()
 ERROR_LOG_FILENAME = ".bsafe-errors.log"
 LOGGING_CONFIG = {
     "version": 1,
@@ -77,7 +76,7 @@ def main(gui) -> None:
     logger.info("Loading credentials for Pocket")
 
     # Load credentials
-    json_path = REPO_DIR_PATH / "configs" / "credentials" / "pocket.json"
+    json_path = Path.cwd() / "configs" / "credentials" / "pocket.json"
     with json_path.open("r") as f:
         account_dict = json.load(f)
 
@@ -114,7 +113,7 @@ def main(gui) -> None:
     logger.info("Loading credentials for Raindrop.io")
 
     # Load credentials
-    json_path = REPO_DIR_PATH / "configs" / "credentials" / "raindrop_io.json"
+    json_path = Path.cwd() / "configs" / "credentials" / "raindrop_io.json"
     with json_path.open("r") as f:
         account_dict = json.load(f)
 
