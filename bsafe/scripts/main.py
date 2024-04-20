@@ -154,3 +154,19 @@ def main(gui, raspi) -> None:
     logger.info("Download of Raindrop.io items has been successful")
 
     browser.close()
+
+    logger.info("Trying to move downloaded files")
+
+    output_dir_path = Path.cwd() / "data" / "outputs"
+    if not output_dir_path.exists():
+        output_dir_path.mkdir(parents=True)
+
+    src_file_path = Path.home() / "Downloads" / "ril_export.html"
+    dst_file_path = output_dir_path / "pocket.html"
+    src_file_path.rename(dst_file_path)
+
+    src_file_path = Path.home() / "Downloads" / "All.csv"
+    dst_file_path = output_dir_path / "raindrop.csv"
+    src_file_path.rename(dst_file_path)
+
+    logger.info("Moving downloaded files has been successful")
