@@ -6,6 +6,7 @@ from pathlib import Path
 import click
 from selenium.webdriver import Chrome
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -60,7 +61,12 @@ LOGGING_CONFIG = {
 @click.option(
     "--gui/--no-gui", show_default=True, help="Whether to display a browser or not."
 )
-def main(gui) -> None:
+@click.option(
+    "--raspi/--no-raspi",
+    show_default=True,
+    help="Whether to run on Raspberry pi or not.",
+)
+def main(gui, raspi) -> None:
     """CLI app to automatically backup Pocket items and Raindrop.io items"""
     logging.config.dictConfig(LOGGING_CONFIG)
     logger = logging.getLogger("bsafe")
@@ -70,7 +76,11 @@ def main(gui) -> None:
     if not gui:
         options.add_argument("--headless=new")
 
-    browser = Chrome(options)
+    if raspi:
+        service = ChromeService("/usr/bin/chromedriver")
+        browser = Chrome(service=service, options=options)
+    else:
+        browser = Chrome(options)
     wait = WebDriverWait(browser, 10)
 
     logger.info("Loading credentials for Pocket")
