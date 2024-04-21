@@ -11,6 +11,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from bsafe.utils import wait_download
+
 ERROR_LOG_FILENAME = ".bsafe-errors.log"
 LOGGING_CONFIG = {
     "version": 1,
@@ -117,8 +119,8 @@ def main(gui, raspi) -> None:
     wait.until(
         ec.visibility_of_element_located((By.LINK_TEXT, "Export HTML file"))
     ).click()
+    wait_download(filename="ril_export.html")
 
-    logger.info("Download of Pocket items has been successful")
     time.sleep(2)
     logger.info("Loading credentials for Raindrop.io")
 
@@ -149,9 +151,9 @@ def main(gui, raspi) -> None:
         )
     ).click()
     browser.find_element(By.LINK_TEXT, "CSV").click()
+    wait_download(filename="All.csv")
 
     time.sleep(2)
-    logger.info("Download of Raindrop.io items has been successful")
 
     browser.close()
 
