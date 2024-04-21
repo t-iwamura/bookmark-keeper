@@ -95,7 +95,7 @@ def main(gui, raspi) -> None:
 
     # Login to Pocket
     browser.get("https://getpocket.com/export")
-    wait.until(ec.presence_of_element_located(("id", "field-1"))).send_keys(
+    wait.until(ec.visibility_of_element_located(("id", "field-1"))).send_keys(
         account_dict["email"]
     )
     wait.until(
@@ -103,7 +103,7 @@ def main(gui, raspi) -> None:
     ).click()
     time.sleep(2)
     browser.find_element(By.CLASS_NAME, "loginform-submit").click()
-    wait.until(ec.presence_of_element_located(("id", "field-2"))).send_keys(
+    wait.until(ec.visibility_of_element_located(("id", "field-2"))).send_keys(
         account_dict["password"]
     )
     browser.find_element(By.CLASS_NAME, "loginform-submit").click()
@@ -132,7 +132,7 @@ def main(gui, raspi) -> None:
 
     # Login to Raindrop.io
     browser.get("https://app.raindrop.io")
-    wait.until(ec.presence_of_element_located(("name", "email"))).send_keys(
+    wait.until(ec.visibility_of_element_located(("name", "email"))).send_keys(
         account_dict["email"]
     )
     browser.find_element("name", "password").send_keys(account_dict["password"])
