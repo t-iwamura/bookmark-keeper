@@ -12,6 +12,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
 
+from bsafe.bin import manage_backup
 from bsafe.utils import wait_download
 
 ERROR_LOG_FILENAME = ".bsafe-errors.log"
@@ -185,5 +186,7 @@ def main(gui, raspi) -> None:
     src_file_path = output_dir_path / "raindrop.csv"
     dst_file_path = output_dir_path / f"raindrop_{date_str}.csv"
     src_file_path.rename(dst_file_path)
+
+    manage_backup()
 
     logger.info("Tidying downloaded files has been successful")
