@@ -1,6 +1,7 @@
 import json
 import logging.config
 import time
+from datetime import date
 from pathlib import Path
 
 import click
@@ -172,3 +173,17 @@ def main(gui, raspi) -> None:
     src_file_path.rename(dst_file_path)
 
     logger.info("Moving downloaded files has been successful")
+
+    logger.info("Trying to tidy downloaded files")
+
+    date_str = date.today().strftime("%Y_%m_%d")
+
+    src_file_path = output_dir_path / "pocket.html"
+    dst_file_path = output_dir_path / f"pocket_{date_str}.html"
+    src_file_path.rename(dst_file_path)
+
+    src_file_path = output_dir_path / "raindrop.csv"
+    dst_file_path = output_dir_path / f"raindrop_{date_str}.csv"
+    src_file_path.rename(dst_file_path)
+
+    logger.info("Tidying downloaded files has been successful")
