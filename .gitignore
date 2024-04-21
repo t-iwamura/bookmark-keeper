@@ -3,6 +3,7 @@
 
 ### Private Settings ###
 /configs/credentials/
+/data/
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
