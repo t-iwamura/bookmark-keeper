@@ -90,7 +90,7 @@ def main(gui, raspi) -> None:
     logger.info("Loading credentials for Pocket")
 
     # Load credentials
-    json_path = Path.cwd() / "configs" / "credentials" / "pocket.json"
+    json_path = Path.cwd() / "configs" / "credentials" / "mozilla.json"
     with json_path.open("r") as f:
         account_dict = json.load(f)
 
@@ -99,25 +99,28 @@ def main(gui, raspi) -> None:
 
     # Login to Pocket
     browser.get("https://getpocket.com/export")
-    wait.until(ec.visibility_of_element_located(("id", "field-1"))).send_keys(
-        account_dict["email"]
-    )
     wait.until(
-        ec.element_to_be_clickable(("id", "onetrust-reject-all-handler"))
+        ec.visibility_of_element_located((By.CLASS_NAME, "login-btn-mozilla"))
     ).click()
-    time.sleep(2)
-    browser.find_element(By.CLASS_NAME, "loginform-submit").click()
-    wait.until(ec.visibility_of_element_located(("id", "field-2"))).send_keys(
-        account_dict["password"]
-    )
-    browser.find_element(By.CLASS_NAME, "loginform-submit").click()
+    wait.until(
+        ec.visibility_of_element_located(
+            (By.XPATH, "//input[@class='input-text tooltip-below']")
+        )
+    ).send_keys(account_dict["email"])
+    browser.find_element(By.ID, "submit-btn").click()
+    time.sleep(1)
+    wait.until(
+        ec.visibility_of_element_located(
+            (By.XPATH, "//input[@class='input-text tooltip-below']")
+        )
+    ).send_keys(account_dict["password"])
+    browser.find_element(By.ID, "submit-btn").click()
 
     logger.info("Login to Pocket has been successful")
     time.sleep(2)
     logger.info("Start a download of a HTML file storing Pocket items")
 
     # Download a HTML file
-    wait.until(ec.visibility_of_element_located((By.LINK_TEXT, "Log In"))).click()
     wait.until(
         ec.visibility_of_element_located((By.LINK_TEXT, "Export HTML file"))
     ).click()
