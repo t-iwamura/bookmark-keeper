@@ -109,12 +109,10 @@ def main(gui, raspi) -> None:
     ).send_keys(account_dict["email"])
     browser.find_element(By.ID, "submit-btn").click()
     time.sleep(1)
-    wait.until(
-        ec.visibility_of_element_located(
-            (By.XPATH, "//input[@class='input-text tooltip-below']")
-        )
-    ).send_keys(account_dict["password"])
-    browser.find_element(By.ID, "submit-btn").click()
+    wait.until(ec.visibility_of_element_located((By.NAME, "password"))).send_keys(
+        account_dict["password"]
+    )
+    browser.find_element(By.XPATH, "//button[text()='Sign in']").click()
 
     logger.info("Login to Pocket has been successful")
     time.sleep(2)
